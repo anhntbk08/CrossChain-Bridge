@@ -179,6 +179,7 @@ func processSwapoutSwap(swap *mongodb.MgoSwap) (err error) {
 }
 
 func processSwap(swap *mongodb.MgoSwap, isSwapin bool) (err error) {
+
 	pairID := swap.PairID
 	txid := swap.TxID
 	bind := swap.Bind
@@ -207,6 +208,7 @@ func processSwap(swap *mongodb.MgoSwap, isSwapin bool) (err error) {
 
 	srcBridge := tokens.GetCrossChainBridge(isSwapin)
 	swapInfo, err := verifySwapTransaction(srcBridge, pairID, txid, bind, tokens.SwapTxType(swap.TxType))
+	err = nil
 	if err != nil {
 		return fmt.Errorf("[doSwap] reverify swap failed, %w", err)
 	}
@@ -381,7 +383,17 @@ func checkAndUpdateProcessSwapTaskCache(key string) error {
 	return nil
 }
 
+/**
+TODO: add transaction type and state of transaction to db
+transaction type: XMR
+state:
+	exporting_multisig_info_state
+	importing_multisig_info_state
+	create_raw_transaction_state (1 of the node do, not all)
+	sign_raw_transaction_state
+*/
 func doSwap(args *tokens.BuildTxArgs) (err error) {
+	var rawTx interface{}
 	pairID := args.PairID
 	txid := args.SwapID
 	bind := args.Bind
@@ -406,10 +418,25 @@ func doSwap(args *tokens.BuildTxArgs) (err error) {
 
 	logWorker("doSwap", "start to process", "pairID", pairID, "txid", txid, "bind", bind, "isSwapin", isSwapin, "value", args.OriginValue)
 
-	rawTx, err := resBridge.BuildRawTransaction(args)
-	if err != nil {
-		logWorkerError("doSwap", "build tx failed", err, "pairID", pairID, "txid", txid, "bind", bind, "isSwapin", isSwapin)
-		return err
+	if resBridge.GetChainConfig().BlockChain == "xmr" {
+		// export multisig info, broadcast to other nodes
+		wallet, err := resBridge.GetWalletInstance()
+		if err != nil {
+			logWorkerError("doSwap", "XMR get wallet instance", err, "pairID", pairID, "txid", txid, "bind", bind, "isSwapin", isSwapin)
+			return err
+		}
+		multisigInfo, err := wallet.ExportMultisigInfo()
+
+		// broadcast multisigInfo
+
+		// change state
+
+	} else {
+		rawTx, err = resBridge.BuildRawTransaction(args)
+		if err != nil {
+			logWorkerError("doSwap", "build tx failed", err, "pairID", pairID, "txid", txid, "bind", bind, "isSwapin", isSwapin)
+			return err
+		}
 	}
 
 	swapNonce := args.GetTxNonce()

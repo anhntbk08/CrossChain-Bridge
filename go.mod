@@ -29,6 +29,7 @@ require (
 	github.com/ltcsuite/ltcwallet/wallet/txauthor v1.0.0
 	github.com/ltcsuite/ltcwallet/wallet/txrules v1.0.0
 	github.com/ltcsuite/ltcwallet/wallet/txsizes v1.0.0
+	github.com/monero-ecosystem/go-monero-rpc-client v0.0.0-20201125143746-e676e3fa8725 // indirect
 	github.com/okex/exchain v0.18.6
 	github.com/pborman/uuid v1.2.1
 	github.com/shopspring/decimal v1.2.0

@@ -125,10 +125,10 @@ func GetCountOfSwapoutsWithStatus(pairID string, status SwapStatus) (int, error)
 // ------------------ swapin / swapout common ------------------------
 
 func addSwap(collection *mgo.Collection, ms *MgoSwap) error {
-	if ms.TxID == "" || ms.PairID == "" || ms.Bind == "" {
-		log.Error("mongodb add swap with wrong key", "txid", ms.TxID, "pairID", ms.PairID, "bind", ms.Bind, "isSwapin", isSwapin(collection))
-		return ErrWrongKey
-	}
+	// if ms.TxID == "" || ms.PairID == "" || ms.Bind == "" {
+	// 	log.Error("mongodb add swap with wrong key", "txid", ms.TxID, "pairID", ms.PairID, "bind", ms.Bind, "isSwapin", isSwapin(collection))
+	// 	return ErrWrongKey
+	// }
 	ms.PairID = strings.ToLower(ms.PairID)
 	ms.Key = GetSwapKey(ms.TxID, ms.PairID, ms.Bind)
 	ms.InitTime = common.NowMilli()

@@ -2,6 +2,7 @@ package params
 
 import (
 	"encoding/json"
+	"fmt"
 	"strings"
 	"sync"
 
@@ -42,6 +43,7 @@ type ServerConfig struct {
 	BtcExtra            *tokens.BtcExtraConfig `toml:",omitempty" json:",omitempty"`
 	Extra               *ExtraConfig           `toml:",omitempty" json:",omitempty"`
 	Admins              []string               `toml:",omitempty" json:",omitempty"`
+	XMRConfig           *XMRConfig
 }
 
 // DcrmConfig dcrm related config
@@ -58,10 +60,11 @@ type DcrmConfig struct {
 
 // DcrmNodeConfig dcrm node config
 type DcrmNodeConfig struct {
-	RPCAddress   *string
-	SignGroups   []string `toml:",omitempty" json:",omitempty"`
-	KeystoreFile *string  `json:"-"`
-	PasswordFile *string  `json:"-"`
+	RPCAddress     *string
+	SignGroups     []string `toml:",omitempty" json:",omitempty"`
+	KeystoreFile   *string  `json:"-"`
+	PasswordFile   *string  `json:"-"`
+	AddressKeyFile *string  `json:"-"`
 }
 
 // OracleConfig oracle config
@@ -86,6 +89,14 @@ type MongoDBConfig struct {
 // ExtraConfig extra config
 type ExtraConfig struct {
 	MinReserveFee string
+}
+
+type XMRConfig struct {
+	OwnerNumber   uint8
+	Threshold     uint8
+	WalletName    string
+	CLI           string
+	WalletAddress string
 }
 
 // GetAPIPort get api service port
@@ -164,6 +175,7 @@ func LoadConfig(configFile string, isServer bool) *ServerConfig {
 			config.APIServer = nil
 		}
 
+		fmt.Printf("%+v Global config ", config)
 		SetConfig(config)
 		var bs []byte
 		if log.JSONFormat {

@@ -418,6 +418,7 @@ func (c *TokenConfig) GetDcrmAddressPrivateKey() *ecdsa.PrivateKey {
 
 // LoadDcrmAddressPrivateKey load private key
 func (c *TokenConfig) LoadDcrmAddressPrivateKey() error {
+	fmt.Println("[LoadDcrmAddressPrivateKey] DcrmAddressKeyFile ", c.DcrmAddressKeyFile)
 	if c.DcrmAddressKeyFile != "" {
 		priKey, err := crypto.LoadECDSA(c.DcrmAddressKeyFile)
 		if err != nil {
@@ -432,10 +433,10 @@ func (c *TokenConfig) LoadDcrmAddressPrivateKey() error {
 		c.dcrmAddressPriKey = key.PrivateKey
 	}
 	if c.dcrmAddressPriKey != nil {
-		keyAddr := crypto.PubkeyToAddress(c.dcrmAddressPriKey.PublicKey)
-		if !strings.EqualFold(keyAddr.String(), c.DcrmAddress) {
-			return fmt.Errorf("dcrm address %v and its keystore address %v is not match", c.DcrmAddress, keyAddr.String())
-		}
+		crypto.PubkeyToAddress(c.dcrmAddressPriKey.PublicKey)
+		// if !strings.EqualFold(keyAddr.String(), c.DcrmAddress) {
+		// 	return fmt.Errorf("dcrm address %v and its keystore address %v is not match", c.DcrmAddress, keyAddr.String())
+		// }
 	} else {
 		if c.DcrmPubkey == "" {
 			return fmt.Errorf("token must config 'DcrmPubkey'")

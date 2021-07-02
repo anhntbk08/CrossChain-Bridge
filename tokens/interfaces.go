@@ -72,6 +72,7 @@ type CrossChainBridge interface {
 	IsSrcEndpoint() bool
 
 	SetChainAndGateway(*ChainConfig, *GatewayConfig)
+	// SetXMRConfig(*params.XMRConfig)
 
 	GetChainConfig() *ChainConfig
 	GetGatewayConfig() *GatewayConfig
@@ -99,6 +100,9 @@ type CrossChainBridge interface {
 	GetBalance(accountAddress string) (*big.Int, error)
 	GetTokenBalance(tokenType, tokenAddress, accountAddress string) (*big.Int, error)
 	GetTokenSupply(tokenType, tokenAddress string) (*big.Int, error)
+
+	// TODO remove - just for testing xmr
+	GetWalletInstance() (WalletInterface, error)
 }
 
 // NonceSetter interface (for eth-like)

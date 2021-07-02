@@ -1,0 +1,74 @@
+PairID = "XMR"
+
+# source token config
+[SrcToken]
+# ID must be ERC20 if source token is erc20 token
+ID = "XMR"
+Name = "Bitcoin Coin"
+Symbol = "XMR"
+Decimals = 18
+Description = "Bitcoin Coin"
+# if ID is ERC20, this is the erc20 token's contract address
+ContractAddress = ""
+# deposit to this address to make swap
+DepositAddress = "mfwPnCuht2b4Lvb5XTds4Rvzy3jZ2ZWrBL"
+# withdraw from this address
+DcrmAddress = "0xe4c02d8408366436885Eb8b4868607209b9DEe6d"
+# dcrm address public key
+DcrmPubkey = "044a9969bf79011466622936f0e0f35fda35c7ef2a855756929eb19648c8bafee83f2e235f438add409b4be4754ecb812191932604ec8dd6b5a114b882f60c8fee"
+DcrmAddressKeyFile = "/Users/anhnt/go/src/github.com/fsn-dev/dcrm-sdk/xmr_node1.key"
+# maximum deposit value
+MaximumSwap = 1000.0
+# minimum deposit value
+MinimumSwap = 0.00001
+# calced deposit fee = deposit value * this rate (when in [min, max] deposit fee range)
+SwapFeeRate = 0.001
+# maximum deposit fee, if calced deposit fee is larger than this fee, then use this value as deposit fee
+MaximumSwapFee = 0.01
+# minimum deposit fee, if calced deposit fee is smaller than this fee, then use this value as deposit fee
+MinimumSwapFee = 0.00001
+# plus this percentage of gas price to make tx more easier to be mined in source chain
+# corresponding to send asset on source chain (eg. XMR) for withdrawing
+PlusGasPricePercentage = 15 # plus 15% gas price
+# if deposit value is larger than this value then need more verify strategy
+BigValueThreshold = 5.0
+# disable deposit function if this flag is true
+DisableSwap = false
+# default gas limit
+DefaultGasLimit = 90000
+# allow swapin from contract address
+AllowSwapinFromContract = false
+
+# dest token config
+[DestToken]
+ID = "mXMR"
+Name = "SMPC Bitcoin"
+Symbol = "mXMR"
+Decimals = 18
+Description = "cross chain bridge XMR with mXMR"
+# mapping erc20 token address
+ContractAddress = "0xCd7ac685c8A126DC11Eed30773CA8ED686121bD3"
+# mapping erc20 token creator
+DcrmAddress = "0xbF0A46d3700E23a98F38079cE217742c92Bb66bC"
+DcrmAddressKeyFile = "/Users/anhnt/go/src/github.com/fsn-dev/dcrm-sdk/xmr_node2.key"
+# dcrm address public key
+DcrmPubkey = "045c8648793e4867af465691685000ae841dccab0b011283139d2eae454b569d5789f01632e13a75a5aad8480140e895dd671cae3639f935750bea7ae4b5a2512e"
+# maximum withdraw value
+MaximumSwap = 100.0
+# minimum withdraw value
+MinimumSwap = 0.00001
+# calced withdraw fee = withdraw value * this rate (when in [min, max] withdraw fee range)
+SwapFeeRate = 0.001
+# maximum withdraw fee, if calced withdraw fee is larger than this fee, then use this value as withdraw fee
+MaximumSwapFee = 0.01
+# minimum withdraw fee, if calced withdraw fee is smaller than this fee, then use this value as withdraw fee
+MinimumSwapFee = 0.00001
+# plus this percentage of gas price to make tx more easier to be mined in dest chain
+# corresponding to send mapping token on dest chain (eg. mXMR) for depositing
+PlusGasPricePercentage = 1 # plus 1% gas price
+# if withdraw value is larger than this value then need more verify strategy
+BigValueThreshold = 50.0
+# disable withdraw function if this flag is true
+DisableSwap = false
+# default gas limit
+DefaultGasLimit = 90000

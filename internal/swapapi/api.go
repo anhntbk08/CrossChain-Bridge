@@ -2,6 +2,8 @@ package swapapi
 
 import (
 	"encoding/hex"
+	"fmt"
+	"math/big"
 	"strings"
 	"time"
 
@@ -201,6 +203,7 @@ func Swapout(txid, pairID *string) (*PostResult, error) {
 }
 
 func basicCheckSwapRegister(bridge tokens.CrossChainBridge, pairIDStr string) error {
+	fmt.Println("pairIDStr ", pairIDStr)
 	tokenCfg := bridge.GetTokenConfig(pairIDStr)
 	if tokenCfg == nil {
 		return tokens.ErrUnknownPairID
@@ -218,20 +221,26 @@ func swap(txid, pairID *string, isSwapin bool) (*PostResult, error) {
 	if err := basicCheckSwapRegister(bridge, pairIDStr); err != nil {
 		return nil, err
 	}
-	swapInfo, err := bridge.VerifyTransaction(pairIDStr, txidstr, true)
-	if err != nil {
-		txStat := bridge.GetTransactionStatus(txidstr)
-		if txStat != nil && txStat.BlockHeight > 0 {
-			swapInfo, err = bridge.VerifyTransaction(pairIDStr, txidstr, false)
-		}
+	// swapInfo, err := bridge.VerifyTransaction(pairIDStr, txidstr, true)
+	swapInfo := &tokens.TxSwapInfo{
+		PairID: *pairID,
+		Value:  big.NewInt(999),
+		Bind:   "5ANsTsbry4YJQEUVCgXsAHUMojBjLrybYE6MUoS5iKY729Q3GbHpdAb8Mg865UkbpZQGZSwRfGC21ZhiUM2Ep4m88ZhQEXZ",
+		To:     "5ANsTsbry4YJQEUVCgXsAHUMojBjLrybYE6MUoS5iKY729Q3GbHpdAb8Mg865UkbpZQGZSwRfGC21ZhiUM2Ep4m88ZhQEXZ",
 	}
+	// if err != nil {
+	// 	txStat := bridge.GetTransactionStatus(txidstr)
+	// 	if txStat != nil && txStat.BlockHeight > 0 {
+	// 		swapInfo, err = bridge.VerifyTransaction(pairIDStr, txidstr, false)
+	// 	}
+	// }
 	var txType tokens.SwapTxType
 	if isSwapin {
 		txType = tokens.SwapinTx
 	} else {
 		txType = tokens.SwapoutTx
 	}
-	err = addSwapToDatabase(txidstr, txType, swapInfo, err)
+	err := addSwapToDatabase(txidstr, txType, swapInfo, nil)
 	if err != nil {
 		return nil, err
 	}

@@ -46,6 +46,7 @@ func GetTokenPairsDir() string {
 
 // SetTokenPairsConfig set token pairs config
 func SetTokenPairsConfig(pairsConfig map[string]*TokenPairConfig, check bool) {
+	log.Println("pairsConfig ", pairsConfig)
 	if check {
 		err := checkTokenPairsConfig(pairsConfig)
 		if err != nil {
@@ -112,6 +113,8 @@ func FindTokenConfig(address string, isSrc bool) (configs []*TokenConfig, pairID
 
 // GetTokenConfig get token config
 func GetTokenConfig(pairID string, isSrc bool) *TokenConfig {
+	fmt.Printf("%+v\n ", tokenPairsConfig)
+	fmt.Println("pairID ", pairID)
 	pairCfg, exist := tokenPairsConfig[strings.ToLower(pairID)]
 	if !exist {
 		log.Trace("GetTokenConfig: pairID not exist", "pairID", pairID)

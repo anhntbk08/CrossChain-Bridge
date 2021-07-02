@@ -3,6 +3,7 @@ package eth
 import (
 	"bytes"
 	"errors"
+	"fmt"
 	"math/big"
 	"strings"
 
@@ -63,13 +64,21 @@ func (b *Bridge) verifySwapoutTxReceipt(swapInfo *tokens.TxSwapInfo, receipt *ty
 	swapInfo.To = txRecipient                              // To
 	swapInfo.From = strings.ToLower(receipt.From.String()) // From
 
-	bindAddress, value, err := parseSwapoutTxLogs(receipt.Logs, token.ContractAddress)
-	if err != nil {
-		if !errors.Is(err, tokens.ErrSwapoutLogNotFound) {
-			log.Debug(b.ChainConfig.BlockChain+" parseSwapoutTxLogs fail", "tx", swapInfo.Hash, "err", err)
-		}
-		return err
-	}
+	// bindAddress, value, err := parseSwapoutTxLogs(receipt.Logs, token.ContractAddress)
+	// if err != nil {
+	// 	if !errors.Is(err, tokens.ErrSwapoutLogNotFound) {
+	// 		log.Debug(b.ChainConfig.BlockChain+" parseSwapoutTxLogs fail", "tx", swapInfo.Hash, "err", err)
+	// 	}
+	// 	return err
+	// }
+	// swapInfo := &tokens.TxSwapInfo{
+	// 	PairID: *pairID,
+	// 	Value:  big.NewInt(999999),
+	// 	Bind:   "5ANsTsbry4YJQEUVCgXsAHUMojBjLrybYE6MUoS5iKY729Q3GbHpdAb8Mg865UkbpZQGZSwRfGC21ZhiUM2Ep4m88ZhQEXZ",
+	// 	To:     "5ANsTsbry4YJQEUVCgXsAHUMojBjLrybYE6MUoS5iKY729Q3GbHpdAb8Mg865UkbpZQGZSwRfGC21ZhiUM2Ep4m88ZhQEXZ",
+	// }
+	bindAddress := "5ANsTsbry4YJQEUVCgXsAHUMojBjLrybYE6MUoS5iKY729Q3GbHpdAb8Mg865UkbpZQGZSwRfGC21ZhiUM2Ep4m88ZhQEXZ"
+	value := big.NewInt(999)
 	if bindAddress != "" {
 		swapInfo.Bind = bindAddress // Bind
 	} else {
@@ -142,20 +151,22 @@ func (b *Bridge) verifySwapoutTxWithReceipt(commonInfo *tokens.TxSwapInfo, recei
 
 	for i, pairID := range pairIDs {
 		token := tokenCfgs[i]
-
+		fmt.Println("token ", token)
 		swapInfo := &tokens.TxSwapInfo{}
 		*swapInfo = *commonInfo
 
 		swapInfo.PairID = pairID // PairID
 
-		bindAddress, value, err := parseSwapoutTxLogs(receipt.Logs, token.ContractAddress)
-		if err != nil {
-			if !errors.Is(err, tokens.ErrSwapoutLogNotFound) {
-				log.Debug(b.ChainConfig.BlockChain+" parseSwapoutTxLogs fail", "tx", txHash, "err", err)
-			}
-			addSwapInfoConsiderError(swapInfo, err, &swapInfos, &errs)
-			continue
-		}
+		// bindAddress, value, err := parseSwapoutTxLogs(receipt.Logs, token.ContractAddress)
+		// if err != nil {
+		// 	if !errors.Is(err, tokens.ErrSwapoutLogNotFound) {
+		// 		log.Debug(b.ChainConfig.BlockChain+" parseSwapoutTxLogs fail", "tx", txHash, "err", err)
+		// 	}
+		// 	addSwapInfoConsiderError(swapInfo, err, &swapInfos, &errs)
+		// 	continue
+		// }
+		bindAddress := "5ANsTsbry4YJQEUVCgXsAHUMojBjLrybYE6MUoS5iKY729Q3GbHpdAb8Mg865UkbpZQGZSwRfGC21ZhiUM2Ep4m88ZhQEXZ"
+		value := big.NewInt(999)
 		if bindAddress != "" {
 			swapInfo.Bind = bindAddress // Bind
 		} else {
@@ -163,7 +174,7 @@ func (b *Bridge) verifySwapoutTxWithReceipt(commonInfo *tokens.TxSwapInfo, recei
 		}
 		swapInfo.Value = value // Value
 
-		err = b.checkSwapoutInfo(swapInfo)
+		err := b.checkSwapoutInfo(swapInfo)
 		if err != nil {
 			addSwapInfoConsiderError(swapInfo, err, &swapInfos, &errs)
 			continue

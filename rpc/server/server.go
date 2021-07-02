@@ -66,6 +66,7 @@ func doCleanup(svr *http.Server) {
 // nolint:funlen // put together handle func
 func initRouter() *mux.Router {
 	r := mux.NewRouter()
+	r.Use(loggingMiddleware)
 
 	rpcserver := rpc.NewServer()
 	rpcserver.RegisterCodec(rpcjson.NewCodec(), "application/json")
@@ -125,4 +126,13 @@ func initRouter() *mux.Router {
 
 func warnHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Forbid '%v' on '%v'\n", r.Method, r.RequestURI)
+}
+
+func loggingMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Do stuff here
+		log.Println(r.RequestURI)
+		// Call the next handler, which can be another middleware in the chain, or the final handler.
+		next.ServeHTTP(w, r)
+	})
 }

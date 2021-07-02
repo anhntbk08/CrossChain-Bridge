@@ -1,0 +1,9 @@
+Filename: wallet_stagnet1
+Description: <Not set>
+Address: 53FexfeDJJBCd4mgFUCdQYTfb838ywjst2fTL2YhEo1wcJXSNePvRjuV3F17QWN3U2L6GCyqHVPQsXhvMsofjfYiLLGYV3Y
+Type: 2/2 multisig
+Network type: Stagenet
+
+
+name: wallet_stagenet_receiver
+Address: 5ANsTsbry4YJQEUVCgXsAHUMojBjLrybYE6MUoS5iKY729Q3GbHpdAb8Mg865UkbpZQGZSwRfGC21ZhiUM2Ep4m88ZhQEXZ

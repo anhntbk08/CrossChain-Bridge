@@ -69,9 +69,11 @@ func swapserver(ctx *cli.Context) error {
 	dbConfig := config.MongoDB
 	mongodb.MongoServerInit([]string{dbConfig.DBURL}, dbConfig.DBName, dbConfig.UserName, dbConfig.Password)
 
+	rpcserver.StartAPIServer()
+
 	worker.StartWork(true)
 	time.Sleep(100 * time.Millisecond)
-	rpcserver.StartAPIServer()
+	// rpcserver.StartAPIServer()
 
 	utils.TopWaitGroup.Wait()
 	log.Info("swapserver exit normally")

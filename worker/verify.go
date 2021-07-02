@@ -2,6 +2,7 @@ package worker
 
 import (
 	"errors"
+	"log"
 	"sync"
 
 	"github.com/anyswap/CrossChain-Bridge/cmd/utils"
@@ -135,6 +136,8 @@ func processSwapVerify(swap *mongodb.MgoSwap, isSwapin bool) (err error) {
 	}
 
 	swapInfo, err := verifySwapTransaction(bridge, pairID, txid, bind, tokens.SwapTxType(swap.TxType))
+	log.Println("[verifySwapTransaction] swapInfo, err ", swapInfo, err)
+	err = nil
 	if swapInfo == nil {
 		return err
 	}

@@ -17,6 +17,7 @@ import (
 	"github.com/anyswap/CrossChain-Bridge/tokens/ltc"
 	"github.com/anyswap/CrossChain-Bridge/tokens/okex"
 	"github.com/anyswap/CrossChain-Bridge/tokens/tools"
+	"github.com/anyswap/CrossChain-Bridge/tokens/xmr"
 )
 
 // NewCrossChainBridge new bridge according to chain name
@@ -39,6 +40,8 @@ func NewCrossChainBridge(id string, isSrc bool) tokens.CrossChainBridge {
 		return fsn.NewCrossChainBridge(isSrc)
 	case strings.HasPrefix(blockChainIden, "COLOSSUS") || strings.HasPrefix(blockChainIden, "COLX"):
 		return colx.NewCrossChainBridge(isSrc)
+	case strings.HasPrefix(blockChainIden, "XMR"):
+		return xmr.NewCrossChainBridge(isSrc)
 	default:
 		log.Fatalf("Unsupported block chain %v", id)
 		return nil
@@ -95,6 +98,9 @@ func InitCrossChainBridge(isServer bool) {
 		block.Init(cfg.BtcExtra)
 	case "COLX":
 		colx.Init(cfg.BtcExtra)
+	case "XMR":
+		// tokens.SrcBridge.SetXMRConfig(cfg.XMRConfig)
+		xmr.Init(cfg.BtcExtra)
 	}
 
 	dcrm.Init(cfg.Dcrm, isServer)

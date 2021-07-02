@@ -1,6 +1,7 @@
 package tokens
 
 import (
+	"errors"
 	"math"
 	"math/big"
 
@@ -38,11 +39,20 @@ var (
 	IsDcrmDisabled bool
 )
 
+type WalletInterface interface {
+	Refresh() error
+	ExportMultisigInfo() (string, error)
+}
+
 // CrossChainBridgeBase base bridge
 type CrossChainBridgeBase struct {
 	ChainConfig   *ChainConfig
 	GatewayConfig *GatewayConfig
 	IsSrc         bool
+}
+
+func (b *CrossChainBridgeBase) GetWalletInstance() (WalletInterface, error) {
+	return nil, errors.New("Not implemented yet")
 }
 
 // NewCrossChainBridgeBase new base bridge
