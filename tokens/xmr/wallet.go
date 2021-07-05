@@ -1,11 +1,7 @@
 package xmr
 
 import (
-	"context"
 	"encoding/json"
-	"errors"
-	"os/exec"
-	"time"
 
 	"github.com/anyswap/CrossChain-Bridge/tokens"
 	monero "github.com/monero-ecosystem/go-monero-rpc-client/wallet"
@@ -22,6 +18,7 @@ type Wallet struct {
 	// MultisigConfig *params.XMRConfig
 }
 
+// just for poc, local wallet rpc node
 var client monero.Client = monero.New(monero.Config{
 	Address: "http://127.0.0.1:18082/json_rpc",
 })
@@ -38,44 +35,40 @@ func (w *Wallet) Refresh() error {
 	return err
 }
 
-func (w *Wallet) Balance() error {
-	cmd := `
-		monero-wallet-cli --stagenet --trusted-daemon --wallet-file wallet_stagnet1  --password '' >> 
-		balances
-	`
-	ctx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
-
-	defer cancel()
-
-	return exec.CommandContext(ctx, cmd, "5").Run()
+func (w *Wallet) Balance() (*monero.ResponseGetBalance, error) {
+	return client.GetBalance(&monero.RequestGetBalance{AccountIndex: 0})
 }
-
-func (w *Wallet) Addresses() error {
-	cmd := `
-		monero-wallet-cli --stagenet --trusted-daemon --wallet-file wallet_stagnet1  --password '' >> 
-		addresses
-	`
-	ctx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
-
-	defer cancel()
-
-	return exec.CommandContext(ctx, cmd, "5").Run()
-}
-
 func (w *Wallet) ExportMultisigInfo() (string, error) {
 	resp, err := client.ExportMultisigInfo()
 
 	return resp.Info, err
 }
 
-func (w *Wallet) ImportMultisigInfo() error {
-	return errors.New("Not implemented yet")
+func (w *Wallet) ImportMultisigInfo(info string) (*monero.ResponseImportMultisigInfo, error) {
+	return client.ImportMultisigInfo(
+		&monero.RequestImportMultisigInfo{
+			Info: []string{info},
+		},
+	)
 }
 
-func (w *Wallet) Transfer() error {
-	return errors.New("Not implemented yet")
+func (w *Wallet) Transfer(target string, amount uint64) (*monero.ResponseTransfer, error) {
+	return client.Transfer(
+		&monero.RequestTransfer{
+			Destinations: []*monero.Destination{
+				{
+					Amount:  amount,
+					Address: target,
+				},
+			},
+		},
+	)
 }
 
-func (w *Wallet) SignTransaction() error {
-	return errors.New("Not implemented yet")
+func (w *Wallet) SignTransaction(multisigTxSet string) (*monero.ResponseSignMultisig, error) {
+	return client.SignMultisig(
+		&monero.RequestSignMultisig{
+			TxDataHex: multisigTxSet,
+		},
+	)
 }

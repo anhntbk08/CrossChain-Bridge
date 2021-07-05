@@ -67,7 +67,6 @@ func (b *Bridge) VerifyChainConfig() {
 
 // VerifyTokenConfig verify token config
 func (b *Bridge) VerifyTokenConfig(tokenCfg *tokens.TokenConfig) error {
-
 	return nil
 }
 

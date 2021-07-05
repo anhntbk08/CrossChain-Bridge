@@ -425,7 +425,7 @@ func doSwap(args *tokens.BuildTxArgs) (err error) {
 			logWorkerError("doSwap", "XMR get wallet instance", err, "pairID", pairID, "txid", txid, "bind", bind, "isSwapin", isSwapin)
 			return err
 		}
-		multisigInfo, err := wallet.ExportMultisigInfo()
+		_, err = wallet.ExportMultisigInfo()
 
 		// broadcast multisigInfo
 
